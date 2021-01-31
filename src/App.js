@@ -1,24 +1,42 @@
-import logo from './logo.svg';
+import { useSelector } from 'react-redux';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.css';
+import EmailList from './components/EmailList/EmailList';
+import Header from './components/Header/Header';
+import Login from './components/Login/Login';
+import Mail from './components/Mail/Mail';
+import SendMail from './components/SendMail/SendMail';
+import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
+  
+  const sendMessageIsOpen = useSelector((state) => state.mail.sendMessageIsOpen);
+  const user = useSelector((state) => state.user.user);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    {
+      !user 
+      ? ( <Login />
+      ) : (
+        <div className="app">
+          <Header />
+          <div className="app__body">
+            <Sidebar />
+            <Switch>
+              <Route path="/mail">
+                <Mail />
+              </Route>
+              <Route path="/">
+                <EmailList />
+              </Route>
+            </Switch>
+          </div>
+          {sendMessageIsOpen && <SendMail /> }
+        </div>
+      )
+    }
+    </BrowserRouter>
   );
 }
 
